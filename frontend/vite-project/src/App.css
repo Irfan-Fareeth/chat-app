@@ -1,0 +1,13 @@
+.App{
+  min-height: 100vh;
+  display: flex;
+  background-image: url('/background-pic.jpg');
+  background-size: cover;
+  background-position: center;
+
+  
+}
+.chakra-container
+{
+    padding: 0px;
+}
