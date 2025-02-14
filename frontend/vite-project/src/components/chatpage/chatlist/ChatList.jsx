@@ -4,7 +4,7 @@ import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Button from 'react-bootstrap/Button';
 import { Search } from 'lucide-react';
-import { Box, Text } from '@chakra-ui/react';
+import { Box, Text, VStack } from '@chakra-ui/react';
 import axios from 'axios';
 import { ChatState } from '../../ApiContext/ChatProvider.jsx';
 import { toaster } from "@/components/ui/toaster";
@@ -12,6 +12,7 @@ import { toaster } from "@/components/ui/toaster";
 const ChatList = () => {
   const [arr, setArr] = useState([]); // Ensure it's an empty array, not undefined
   const [userInfo, setUserInfo] = useState(); // Start as null to check when it updates
+  const [searchTerm,setSearchTerm] = useState("");
   const user = ChatState();
 
   // Set userInfo when `user` changes
@@ -41,14 +42,18 @@ const ChatList = () => {
     fetchChats();
   }, [userInfo]); // Run only when userInfo is set
 
+  //tofilter chats to find the required chat
+  const filteredChats = arr.filter( chat=>
+    chat.chatName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
   return (
     <Box width="35%" padding="20px" border="1px solid white" display="flex" flexDirection="column"
          height="100vh" overflowY="auto">
       {/* Search button */}
       <Box>
-        <InputGroup className="mb-3">
-          <Form.Control placeholder="Search chats" aria-label="Search chats" />
-          <Button>
+        <InputGroup className="mb-3" border="none">
+          <Form.Control placeholder="Search chats" aria-label="Search chats" onChange={(e)=>setSearchTerm(e.target.value)}/>
+          <Button style={{backgroundColor:"rgb(0,0,0, 0.5)", border:"none"}} disabled>
             <Search size={18} />
           </Button>
         </InputGroup>
@@ -61,7 +66,9 @@ const ChatList = () => {
           '&::-webkit-scrollbar-thumb': { background: 'gray', borderRadius: '10px' },
           '&::-webkit-scrollbar-track': { background: 'transparent' },
         }}>
-        {arr.map(chat => (
+        {/*to display no results found when there is no chats matching*/
+        (filteredChats.length>0)?
+        filteredChats.map(chat => (
           <Box key={chat._id} borderRadius="5px" position="relative" width="100%" minHeight="5em"
             display="flex" flexDirection="column" padding="10px"
             backgroundColor="rgb(0, 0, 0, 0.5)" overflow="hidden"
@@ -88,10 +95,13 @@ const ChatList = () => {
               display: "-webkit-box", WebkitBoxOrient: "vertical",
               WebkitLineClamp: 1, textOverflow: "ellipsis", color: "white"
             }}>
-              {chat.latestMessage}
+              {chat.latestMessage==""?`latestMessage from ${chat.chatName}`:chat.latestMessage}
             </Text>
           </Box>
-        ))}
+        ))
+        :<Text  color="black" textAlign="center" fontSize="lg" marginTop="10px">
+          No result found
+        </Text>}
       </Box>
     </Box>
   );

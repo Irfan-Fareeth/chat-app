@@ -7,7 +7,9 @@ import {
 } from "@/components/ui/menu"
 import { LuLogOut, LuUser } from "react-icons/lu"
 import { useNavigate } from "react-router-dom"
-
+import { Avatar } from "@chakra-ui/react"
+import { useState } from "react"
+import ProfileModal from "./ProfileModal"
 const Profile = () => {
   const navigate = useNavigate();
   const logoutHandler = async ()=>
@@ -15,17 +17,22 @@ const Profile = () => {
       localStorage.removeItem("userInfo");
       navigate('/');
   };
+  const [modalShow, setModalShow] = useState(false);
   return (
-    <MenuRoot>
+      <>
+      <MenuRoot>
       <MenuTrigger asChild>
         <Box cursor="pointer" fontWeight="bold">
-          Avatar
+        <Avatar.Root  size="sm">
+        <Avatar.Fallback name="irfan fareeth" />
+        <Avatar.Image src="vite.svg" />
+        </Avatar.Root>
         </Box>
       </MenuTrigger>
       <MenuContent>
         <MenuItem value="profile" valueText="profile">
           <LuUser/>
-          <Box flex="1">Profile</Box>
+          <Box  flex="1" onClick={() => setModalShow(true)}>Profile</Box>
         </MenuItem>
         
         <MenuItem value="logout" valueText="logout" onClick={logoutHandler}>
@@ -35,7 +42,13 @@ const Profile = () => {
         </MenuItem>
         
       </MenuContent>
+      
+      <ProfileModal
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+      />
     </MenuRoot>
+    </>
   )
 }
 
