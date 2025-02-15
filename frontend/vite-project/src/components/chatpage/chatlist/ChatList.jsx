@@ -3,17 +3,19 @@ import './ChatList';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Button from 'react-bootstrap/Button';
-import { Search } from 'lucide-react';
-import { Box, Text, VStack } from '@chakra-ui/react';
+import { Search, UserPlus, SearchX } from 'lucide-react';
+import { Box, Text } from '@chakra-ui/react';
 import axios from 'axios';
 import { ChatState } from '../../ApiContext/ChatProvider.jsx';
 import { toaster } from "@/components/ui/toaster";
-
+import AddChatModal from './AddChatModal';
 const ChatList = () => {
   const [arr, setArr] = useState([]); // Ensure it's an empty array, not undefined
   const [userInfo, setUserInfo] = useState(); // Start as null to check when it updates
   const [searchTerm,setSearchTerm] = useState("");
   const user = ChatState();
+  const [modalShow, setModalShow] = useState(false);
+
 
   // Set userInfo when `user` changes
   useEffect(() => {
@@ -49,16 +51,19 @@ const ChatList = () => {
   return (
     <Box width="35%" padding="20px" border="1px solid white" display="flex" flexDirection="column"
          height="100vh" overflowY="auto">
-      {/* Search button */}
+      {/* Search button and add chat button*/}
       <Box>
         <InputGroup className="mb-3" border="none">
-          <Form.Control placeholder="Search chats" aria-label="Search chats" onChange={(e)=>setSearchTerm(e.target.value)}/>
-          <Button style={{backgroundColor:"rgb(0,0,0, 0.5)", border:"none"}} disabled>
+          <Form.Control placeholder="Search chats" aria-label="Search chats" onChange={(e)=>setSearchTerm(e.target.value)}
+             />
+          <Button style={{backgroundColor:"rgb(0,0,0, 0.5)", border:"none"}} >
             <Search size={18} />
+          </Button>
+          <Button style={{backgroundColor:"rgb(0,0,0, 0.5)", border:"none"}} onClick={()=>setModalShow(true)}>
+            <UserPlus size={24} />
           </Button>
         </InputGroup>
       </Box>
-
       {/* Chat List */}
       <Box display="flex" flexDirection="column" gap="3" height="100vh" overflowY="auto"
         paddingRight="5px" css={{
@@ -99,10 +104,27 @@ const ChatList = () => {
             </Text>
           </Box>
         ))
-        :<Text  color="black" textAlign="center" fontSize="lg" marginTop="10px">
-          No result found
-        </Text>}
+        :<>
+          {/* add contanct when no result found*/}
+          <Button style={{
+                         backgroundColor:"rgb(0,0,0, 0.5)", border:"none", display: "flex", 
+                         justifyContent: "center", alignItems: "center", gap: "8px"
+                        }}
+                  onClick={()=>setModalShow(true)}
+          >
+            <UserPlus size={24} /> Add new contact
+          </Button>
+          <Text  textAlign="center" fontSize="large"  color="white" style={{border:"none", display: "flex", 
+                         justifyContent: "center", alignItems: "center", gap: "8px", height: "100%",
+                        width: "100%"
+          }}>
+            <SearchX size={30}/> No results
+          </Text>
+
+        </>
+        }
       </Box>
+      <AddChatModal show={modalShow} onHide={() => setModalShow(false)} />
     </Box>
   );
 };
