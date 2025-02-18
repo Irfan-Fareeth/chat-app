@@ -10,11 +10,14 @@ import { useNavigate } from "react-router-dom"
 import { Avatar } from "@chakra-ui/react"
 import { useState } from "react"
 import ProfileModal from "./ProfileModal"
+import { ChatState } from "@/components/ApiContext/ChatProvider"
 const Profile = () => {
   const navigate = useNavigate();
+  const {setArr} = ChatState();
   const logoutHandler = async ()=>
   {
       localStorage.removeItem("userInfo");
+      setArr([]);
       navigate('/');
   };
   const [modalShow, setModalShow] = useState(false);
