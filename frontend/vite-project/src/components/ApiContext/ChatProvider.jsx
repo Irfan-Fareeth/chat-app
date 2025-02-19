@@ -7,6 +7,8 @@ const ChatProvider = ({children})=>
 {
     const [user, setUser] = useState();
     const [arr, setArr] = useState([]);
+    const [selectedChat, setSelectedChat] = useState("");
+    const [visibleProfileTab, setVisibleProfileTab] = useState(false);
     const navigate = useNavigate();
     //fetch chats
     const fetchChats = async () => {
@@ -31,7 +33,12 @@ const ChatProvider = ({children})=>
             navigate('/');
         }
     }, [navigate]);
-    return <ChatContext.Provider value={{user, setUser, arr, setArr, fetchChats}}>{children}</ChatContext.Provider>;
+    return <ChatContext.Provider 
+              value={{user, setUser, 
+                      arr, setArr, 
+                      fetchChats, 
+                      selectedChat, setSelectedChat,
+                      visibleProfileTab, setVisibleProfileTab}}>{children}</ChatContext.Provider>;
 
 }
 

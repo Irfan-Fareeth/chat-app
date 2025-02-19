@@ -8,7 +8,7 @@ import { Box, Text } from '@chakra-ui/react';
 import { Stack } from "@chakra-ui/react";
 import { Skeleton } from "@/components/ui/skeleton"
 import { ChatState } from '../../ApiContext/ChatProvider.jsx';
-import { toaster } from "@/components/ui/toaster";
+import { GetSender } from './ChatRequirements';
 import AddChatModal from './AddChatModal';
 const ChatList = () => {
    // Ensure it's an empty array, not undefined
@@ -16,9 +16,26 @@ const ChatList = () => {
   const [searchTerm,setSearchTerm] = useState("");
   const user = ChatState();
   const [modalShow, setModalShow] = useState(false);
-  const {arr, fetchChats} = ChatState();
+  const {arr, fetchChats, selectedChat, setSelectedChat, setVisibleProfileTab} = ChatState();
   const [filteredChats, setFilteredChats] = useState([]);
   const [loadingChats, setLoadingChats] = useState(false);
+
+  //to display skeletons
+  const [skeletonCount, setSkeletonCount] = useState(6); 
+  useEffect(() => {
+    // Calculate number of skeletons based on screen height
+    const calculateSkeletons = () => {
+      const chatHeight = 80; // Approx height of each chat item in px (5em ~ 80px)
+      const availableHeight = window.innerHeight * 0.8; // 80% of screen height
+      const count = Math.floor(availableHeight / chatHeight); // Calculate number of skeletons
+      setSkeletonCount(count);
+    };
+
+    calculateSkeletons();
+    window.addEventListener("resize", calculateSkeletons); // Recalculate on resize
+
+    return () => window.removeEventListener("resize", calculateSkeletons);
+  }, []);
   // Set userInfo when `user` changes
   useEffect(() => {
     if (user?.user) {
@@ -47,8 +64,12 @@ const ChatList = () => {
     );
     setLoadingChats(false);
   }, [arr, searchTerm]);
+
+  
   return (
-    <Box width="35%" padding="20px" border="1px solid white" display="flex" flexDirection="column"
+    <Box  padding="20px"  display={{md:"flex",base:selectedChat?"none":"flex"}}
+        w={{base: "100%", md: "32%"}}flexDirection="column"
+        
 >
       {/* Search button and add chat button*/}
       <Box>
@@ -64,7 +85,7 @@ const ChatList = () => {
         </InputGroup>
       </Box>
       {/* Chat List */}
-      <Box display="flex" flexDirection="column" gap="3" maxHeight="80%" overflowY="auto"
+      <Box display="flex" flexDirection="column" gap="3" maxHeight="83%" overflowY="auto"
         paddingRight="5px" css={{
           '&::-webkit-scrollbar': { width: '5px' },
           '&::-webkit-scrollbar-thumb': { background: 'white', borderRadius: '10px',  },
@@ -72,13 +93,11 @@ const ChatList = () => {
         }}>
         {/*to display no results found when there is no chats matching*/
         loadingChats?
-          <Stack gap="6" width="100%">
-            <Skeleton height="5em" width="100%"/>
-            <Skeleton height="5em" width="100%"/>
-            <Skeleton height="5em" width="100%"/>
-            <Skeleton height="5em" width="100%"/>
-            <Skeleton height="5em" width="100%"/>
-          </Stack>
+        <Stack gap="6" width="100%">
+        {Array(skeletonCount).fill("").map((_, index) => (
+          <Skeleton key={index} height="5em" width="100%" borderRadius="5px" />
+        ))}
+       </Stack>
         :
         (filteredChats.length>0)?
         filteredChats.map(chat => (
@@ -86,6 +105,7 @@ const ChatList = () => {
             display="flex" flexDirection="column" padding="10px"
             backgroundColor="rgb(0, 0, 0, 0.5)" overflow="hidden"
             backdropFilter="blur(10px)" transition="all 0.35s ease"
+            onClick={()=>{setSelectedChat(chat); setVisibleProfileTab(false)}}
             _before={{
               content: '""', position: "absolute", right: "0", top: "0",
               height: "14px", width: "14px", borderTop: "3px solid white",
@@ -103,17 +123,19 @@ const ChatList = () => {
               _after: { transform: "translate(0,0)", opacity: 1 },
               color: "white", cursor: "pointer",
             }}>
-            <Text fontWeight="bold" color="white" fontSize="1rem">{chat.chatName}</Text>
+            <Text fontWeight="bold" color="white" fontSize="1rem">{
+                  GetSender(userInfo, chat.users)
+                }</Text>
             <Text style={{
               display: "-webkit-box", WebkitBoxOrient: "vertical",
               WebkitLineClamp: 1, textOverflow: "ellipsis", color: "white"
             }}>
-              {chat.latestMessage==""?`latestMessage from ${chat.chatName}`:chat.latestMessage}
+              {chat.latestMessage==""?`latestMessage from ${GetSender(userInfo, chat.users)}`:chat.latestMessage}
             </Text>
           </Box>
         ))
         :<>
-          {/* add contact when no result found*/}
+          {/* add contact when no result found*/} 
           <Button style={{
                          backgroundColor:"rgb(0,0,0, 0.5)", border:"none", display: "flex", 
                          justifyContent: "center", alignItems: "center", gap: "8px"

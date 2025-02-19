@@ -13,13 +13,18 @@ import ProfileModal from "./ProfileModal"
 import { ChatState } from "@/components/ApiContext/ChatProvider"
 const Profile = () => {
   const navigate = useNavigate();
-  const {setArr} = ChatState();
+  const {setArr, setSelectedChat, setVisibleProfileTab} = ChatState();
   const logoutHandler = async ()=>
   {
       localStorage.removeItem("userInfo");
-      setArr([]);
       navigate('/');
-  };
+      setTimeout(()=>{
+        setArr([]);
+        setVisibleProfileTab(false);
+        setSelectedChat();
+      },1000);
+ };
+
   const [modalShow, setModalShow] = useState(false);
   return (
       <>

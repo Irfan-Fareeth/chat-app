@@ -12,7 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 const AddChatModal = ({ setModalShow, setLoadingChats,...props }) => {
   const user = ChatState();
-  const {arr, setArr, fetchChats} = ChatState();
+  const {arr, setArr, fetchChats, setSelectedChat} = ChatState();
   const [userInfo, setUserInfo] = useState(null);
   const [availableChat, setAvailableChat] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -72,14 +72,23 @@ const AddChatModal = ({ setModalShow, setLoadingChats,...props }) => {
 
   const createChat = async (userId) => {
     try {
-
+      
       const config = {
         headers: { Authorization: `Bearer ${userInfo.token}` },
       };
       const {data} = await axios.post("http://localhost:5000/api/chat", { userId }, config);
+      
       console.log(data);
-      setArr([data,...arr]);
+    if(arr.find((c)=>c._id == data._id))
+      {
+        setModalShow(false);
+        setSelectedChat(data);
+        setSearchTerm("");
+        return ;
+      }
+      setSelectedChat(data);
       setSearchTerm("");
+      setArr([data,...arr]);
       //to refetch chats after adding
       setLoadingChats(true);
       setModalShow(false);
