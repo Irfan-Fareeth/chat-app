@@ -1,7 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 const Chat = require("../models/chatModel")
-const Message = require("../models/messageModel");
 const accessChats = asyncHandler(
     async(req, res)=>
     {
@@ -90,6 +89,7 @@ const fetchChats = asyncHandler(
 const createGroupChat = asyncHandler(
     async(req, res)=>
     {
+        console.log("vander");
         if(!(req.body.users) || !(req.body.name))
         {
             return res.status(400).send({message: "Please fill all the fields"});
@@ -161,8 +161,8 @@ const addToGroup = asyncHandler(
     async(req,res)=>
     {
         const {userToAdd, chatId} = req.body;
-        if(!userToAdd)
-            return res.status(400).send({message: "please fill all the fields"});
+        if(!userToAdd || userToAdd.length<1)
+            return res.status(400).send({message: "please select one or more users"});
 
         
         const updatedGroupChat = await Chat.findByIdAndUpdate(

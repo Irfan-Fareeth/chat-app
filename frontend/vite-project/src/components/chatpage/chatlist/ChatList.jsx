@@ -3,23 +3,24 @@ import './ChatList';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Button from 'react-bootstrap/Button';
-import { Search, UserPlus, SearchX } from 'lucide-react';
+import { Search, UserPlus, SearchX, Plus } from 'lucide-react';
 import { Box, Text } from '@chakra-ui/react';
 import { Stack } from "@chakra-ui/react";
 import { Skeleton } from "@/components/ui/skeleton"
 import { ChatState } from '../../ApiContext/ChatProvider.jsx';
 import { GetSender } from './ChatRequirements';
 import AddChatModal from './AddChatModal';
+import GroupChatModal from '../groupchat/GroupChatModal';
 const ChatList = () => {
    // Ensure it's an empty array, not undefined
   const [userInfo, setUserInfo] = useState(); // Start as null to check when it updates
   const [searchTerm,setSearchTerm] = useState("");
   const user = ChatState();
-  const [modalShow, setModalShow] = useState(false);
+  const [addChatModal, setaddChatModal] = useState(false);
   const {arr, fetchChats, selectedChat, setSelectedChat, setVisibleProfileTab} = ChatState();
   const [filteredChats, setFilteredChats] = useState([]);
   const [loadingChats, setLoadingChats] = useState(false);
-
+  const [addGroupModal, setAddGroupModal] = useState(false);
   //to display skeletons
   const [skeletonCount, setSkeletonCount] = useState(6); 
   useEffect(() => {
@@ -69,18 +70,19 @@ const ChatList = () => {
   return (
     <Box  padding="20px"  display={{md:"flex",base:selectedChat?"none":"flex"}}
         w={{base: "100%", md: "32%"}}flexDirection="column"
-        
->
+        maxHeight="100vh"
+        >
       {/* Search button and add chat button*/}
       <Box>
         <InputGroup className="mb-3" border="none">
           <Form.Control placeholder="Search chats" aria-label="Search chats" onChange={(e)=>setSearchTerm(e.target.value)}
              />
-          <Button style={{backgroundColor:"rgb(0,0,0, 0.5)", border:"none"}} >
-            <Search size={18} />
-          </Button>
-          <Button style={{backgroundColor:"rgb(0,0,0, 0.5)", border:"none"}} onClick={()=>setModalShow(true)}>
+          
+          <Button style={{backgroundColor:"rgb(0,0,0, 0.5)", border:"none"}} onClick={()=>setaddChatModal(true)}>
             <UserPlus size={24} />
+          </Button> 
+          <Button style={{backgroundColor:"rgb(0,0,0, 0.5)", border:"none", fontSize: "13px"}} onClick={()=>{setAddGroupModal(true)}}>
+            Create Group
           </Button>
         </InputGroup>
       </Box>
@@ -124,13 +126,13 @@ const ChatList = () => {
               color: "white", cursor: "pointer",
             }}>
             <Text fontWeight="bold" color="white" fontSize="1rem">{
-                  GetSender(userInfo, chat.users)
+                  chat.isGroupChat?chat.chatName:GetSender(userInfo, chat.users)
                 }</Text>
             <Text style={{
               display: "-webkit-box", WebkitBoxOrient: "vertical",
               WebkitLineClamp: 1, textOverflow: "ellipsis", color: "white"
             }}>
-              {chat.latestMessage==""?`latestMessage from ${GetSender(userInfo, chat.users)}`:chat.latestMessage}
+              {chat.latestMessage==""?`${GetSender(userInfo, chat.users)}: latestMessage`:chat.latestMessage}
             </Text>
           </Box>
         ))
@@ -140,7 +142,7 @@ const ChatList = () => {
                          backgroundColor:"rgb(0,0,0, 0.5)", border:"none", display: "flex", 
                          justifyContent: "center", alignItems: "center", gap: "8px"
                         }}
-                  onClick={()=>setModalShow(true)}
+                  onClick={()=>setaddChatModal(true)}
           >
             <UserPlus size={24} /> Add new contact
           </Button>
@@ -154,8 +156,10 @@ const ChatList = () => {
         </>
         }
       </Box>
-      <AddChatModal show={modalShow} setModalShow={setModalShow} onHide={() => setModalShow(false)} 
+      <AddChatModal show={addChatModal} setaddChatModal={setaddChatModal} onHide={() => setaddChatModal(false)} 
                     setLoadingChats = {setLoadingChats}/>
+      <GroupChatModal  show={addGroupModal} setAddGroupModal={setAddGroupModal} onHide={() => setAddGroupModal(false)} 
+                    />                     
     </Box>
   );
 };

@@ -9,7 +9,7 @@ const SingleChatProfile = () => {
     <>
     <Box cursor="pointer" fontWeight="bold"  onClick={()=>setVisibleProfileTab(true)}>
         <Avatar.Root  size="sm">
-            <Avatar.Fallback name="irfan fareeth" />
+            <Avatar.Fallback name="Default Profile" />
             <Avatar.Image src="vite.svg" />
         </Avatar.Root>
     </Box>

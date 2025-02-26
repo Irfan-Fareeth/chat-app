@@ -28,7 +28,7 @@ const Homepage = () => {
           justifyContent='center'
           p={3}
           bg={"white"}
-          m = " 0 15px 0"
+          
           borderRadius="lg"
           borderWidth="1px">
           <Tabs.Root defaultValue="login" w='100%'>

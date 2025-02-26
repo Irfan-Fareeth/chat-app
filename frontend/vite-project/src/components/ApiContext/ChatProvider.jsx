@@ -38,7 +38,8 @@ const ChatProvider = ({children})=>
                       arr, setArr, 
                       fetchChats, 
                       selectedChat, setSelectedChat,
-                      visibleProfileTab, setVisibleProfileTab}}>{children}</ChatContext.Provider>;
+                      visibleProfileTab, setVisibleProfileTab,
+                     }}>{children}</ChatContext.Provider>;
 
 }
 

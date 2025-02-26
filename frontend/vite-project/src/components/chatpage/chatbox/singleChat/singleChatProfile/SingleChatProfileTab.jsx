@@ -38,7 +38,9 @@ const SingleChatProfileTab = () => {
          flexDirection="column">
         <Box height="10%" className="centeralized" width={{base:"100%", md: "70%"}} backgroundColor="white"
              borderRadius="10px">
-          <Text margin="0px" className="centralized">{selectedChat?GetSender(user, selectedChat.users):null}</Text>
+          <Text margin="0px" className="centralized">{selectedChat?
+                                                      selectedChat.isGroupChat?selectedChat.chatName:GetSender(user, selectedChat.users)
+                                                      :null}</Text>
         </Box>
         <Box height="80%" width={{base:"100%", md: "70%"}} className="centeralized" borderRadius="10px">
            <Avatar.Root style={{ height: "100%", width: "100%" }} shape="rounded">
@@ -48,9 +50,9 @@ const SingleChatProfileTab = () => {
                       />
             </Avatar.Root>
         </Box>
-        <Box height="10%" className="centeralized" width={{base:"100%", md: "70%"}} backgroundColor="white"
+        <Box height="50px"className="centeralized" width={{base:"100%", md: "70%"}} backgroundColor="white"
              borderRadius="10px">
-          <Text margin="0px">{selectedChat?GetEmailId(user, selectedChat.users):null}</Text>
+          {selectedChat?<Text margin="0px">{GetEmailId(user, selectedChat.users)}</Text>:null}
         </Box>
     </Box>
   </Box>
