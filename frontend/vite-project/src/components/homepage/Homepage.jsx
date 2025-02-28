@@ -13,7 +13,7 @@ const Homepage = () => {
   <Container maxW='xl' centerContent>
         <Box 
           display='flex' 
-          w='100%' 
+          w='95%' 
           justifyContent="center"
           p={3}
           bg={"white"}
@@ -24,14 +24,14 @@ const Homepage = () => {
         </Box>
         <Box 
           display='flex' 
-          w='100%' 
+          w='95%' 
           justifyContent='center'
           p={3}
           bg={"white"}
           
           borderRadius="lg"
           borderWidth="1px">
-          <Tabs.Root defaultValue="login" w='100%'>
+          <Tabs.Root defaultValue="register" w='100%'>
             <Tabs.List >
               <Tabs.Trigger value="login" minW='50%'>
                 <LuUser />

@@ -9,13 +9,13 @@ import 'bootstrap/dist/css/bootstrap.min.css'; // to import react-bootstrap styl
 const Chat = () => {
     const user = ChatState();
   return (
-      <Container width="100%" padding="0px">
+      <Box width="100%" padding="0px">
         <Box width="100%" >{<ChatHead/>}</Box>
-        <Box display="flex" flexDirection="row" justifyContent="space-between" width="100%" height='100vh'>
+        <Box display="flex" flexDirection="row" justifyContent="space-between" width="100%" height='95vh'>
            {user && <ChatList/>}
            {user && <ChatBox/>}
         </Box>
-      </Container>
+      </Box>
   )
 }
 

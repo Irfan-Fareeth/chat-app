@@ -9,6 +9,7 @@ import InputGroup from "react-bootstrap/InputGroup";
 import { Box, Text } from "@chakra-ui/react";
 import { Stack } from "@chakra-ui/react";
 import { Skeleton } from "@/components/ui/skeleton"
+import toast from "react-hot-toast";
 
 const AddChatModal = ({ setaddChatModal, setLoadingChats,...props }) => {
   const user = ChatState();
@@ -18,6 +19,7 @@ const AddChatModal = ({ setaddChatModal, setLoadingChats,...props }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false); // Track if a search was made
+  const [isChatCreating, setIsChatCreating] = useState(false);
   let searchTimeout;
 
   // Set userInfo when user is available
@@ -70,36 +72,47 @@ const AddChatModal = ({ setaddChatModal, setLoadingChats,...props }) => {
     setLoading(false);
   };
 
-  const createChat = async (userId) => {
-    try {
-      
-      const config = {
-        headers: { Authorization: `Bearer ${userInfo.token}` },
-      };
-      const {data} = await axios.post("http://localhost:5000/api/chat", { userId }, config);
-      
-      console.log(data);
-    if(arr.find((c)=>c._id == data._id))
-      {
-        setaddChatModal(false);
+const createChat = async (userId) => {
+  setIsChatCreating(true);
+
+  await toast.promise(
+    (async () => {
+      try {
+        const config = {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        };
+        const { data } = await axios.post("http://localhost:5000/api/chat", { userId }, config);
+
+        if (arr.find((c) => c._id === data._id)) {
+          setaddChatModal(false);
+          setSelectedChat(data);
+          setSearchTerm("");
+          return;
+        }
+
         setSelectedChat(data);
         setSearchTerm("");
-        return ;
+        setArr([data, ...arr]);
+
+        // Refetch chats
+        setLoadingChats(true);
+        setaddChatModal(false);
+        await fetchChats();
+        setLoadingChats(false);
+      } catch (error) {
+        throw new Error("Failed to create chat");
+      } finally {
+        setIsChatCreating(false);
       }
-      setSelectedChat(data);
-      setSearchTerm("");
-      setArr([data,...arr]);
-      //to refetch chats after adding
-      setLoadingChats(true);
-      setaddChatModal(false);
-      await fetchChats();  // Ensure we wait for fetchChats to complete
-      setLoadingChats(false);
-    } catch (error) {
-      console.error(error);
-    }finally
+    })(),
     {
+      loading: "Warming up the chat room...",
+      success: "Boom! Your chat is live! 🚀",
+      error: "Failed to create chat. Try again!",
     }
-  };
+  );
+};
+
 
   return (
     <Modal {...props} size="md" centered>
@@ -126,15 +139,14 @@ const AddChatModal = ({ setaddChatModal, setLoadingChats,...props }) => {
         </Modal.Title>
       </Modal.Header>
 
-      <Modal.Body style={{ maxHeight: "70vh", minHeight: "70vh", overflowY: "scroll" }}>
+      <Modal.Body style={{ maxHeight: "60vh", minHeight: "30vh", overflowY: "auto" }}>
         <Box display="flex" flexDirection="column" gap="3" paddingRight="5px">
           {loading ? (
                 <Stack gap="3" width="100%">
                   <Skeleton height="3em" width="100%"/>
                   <Skeleton height="3em" width="100%"/>
                   <Skeleton height="3em" width="100%"/>
-                  <Skeleton height="3em" width="100%"/>
-                  <Skeleton height="3em" width="100%"/>
+                  
                 </Stack>
           ) : searched && availableChat.length === 0 ? (
             <>

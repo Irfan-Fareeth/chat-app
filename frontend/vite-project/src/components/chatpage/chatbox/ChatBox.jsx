@@ -17,7 +17,7 @@ const ChatBox = () => {
       display={{ base: selectedChat ? "flex" : "none", md: "flex" }}
       justifyContent="center"
       w={{ base: "100%", md: "68%" }}
-      height="90vh"
+      minHeight="90vh"  maxHeight="90vh"
     >
     {!visibleProfileTab?  
       <SingleChat/>:

@@ -8,4 +8,8 @@ export const GetSender = (loggedUser, user) => {
   return (user[0]?._id==loggedUser?._id )?(user[1]?.name):(user[0]?.name);
   
 }
+export const isLoggedUser = (loggedUser, user)=>
+{
+  return (loggedUser?._id === user?._id?true:false);
+}
 

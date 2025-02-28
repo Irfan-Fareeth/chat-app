@@ -4,7 +4,7 @@ import './ChatHead'
 import  Profile from './Profile/Profile'
 const ChatHead = () => {
   return (
-    <Box as="header" width="100%" display ="flex" justifyContent="space-between"  alignItems="center" padding="5px 10px 5px 10px"
+    <Box width="100%" display ="flex" justifyContent="space-between"  alignItems="center" padding="5px 10px 5px 10px"
          height='50px' backdropFilter="blur(10px)" opacity="0.8" backgroundColor="black" position="sticky" top="0">
         <Box color='white' >
             Chit-Chat

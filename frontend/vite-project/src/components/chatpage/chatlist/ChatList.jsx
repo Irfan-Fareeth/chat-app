@@ -68,9 +68,9 @@ const ChatList = () => {
 
   
   return (
-    <Box  padding="20px"  display={{md:"flex",base:selectedChat?"none":"flex"}}
+    <Box  padding="10px"  display={{md:"flex",base:selectedChat?"none":"flex"}}
         w={{base: "100%", md: "32%"}}flexDirection="column"
-        maxHeight="100vh"
+        minHeight="90vh" maxHeight="90vh" paddingBottom="0px"
         >
       {/* Search button and add chat button*/}
       <Box>
@@ -87,7 +87,7 @@ const ChatList = () => {
         </InputGroup>
       </Box>
       {/* Chat List */}
-      <Box display="flex" flexDirection="column" gap="3" maxHeight="83%" overflowY="auto"
+      <Box  display="flex" flexDirection="column" gap="3" maxHeight="100%" overflowY="auto"
         paddingRight="5px" css={{
           '&::-webkit-scrollbar': { width: '5px' },
           '&::-webkit-scrollbar-thumb': { background: 'white', borderRadius: '10px',  },
@@ -129,11 +129,18 @@ const ChatList = () => {
                   chat.isGroupChat?chat.chatName:GetSender(userInfo, chat.users)
                 }</Text>
             <Text style={{
-              display: "-webkit-box", WebkitBoxOrient: "vertical",
-              WebkitLineClamp: 1, textOverflow: "ellipsis", color: "white"
+              display: "-webkit-box", 
+              WebkitBoxOrient: "vertical",
+              WebkitLineClamp: 1, 
+              textOverflow: "ellipsis", 
+              color: "white"
             }}>
-              {chat.latestMessage==""?`${GetSender(userInfo, chat.users)}: latestMessage`:chat.latestMessage}
+              {chat.latestMessage && chat.latestMessage.content 
+                ? `${chat.latestMessage.sender._id === userInfo._id ? "You" : chat.latestMessage.sender.name}: ${chat.latestMessage.content}` 
+                : "No messages yet"}
             </Text>
+
+
           </Box>
         ))
         :<>

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Modal from "react-bootstrap/Modal";
 import { ChatState } from "@/components/ApiContext/ChatProvider";
-import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import { Box, Text } from "@chakra-ui/react";
@@ -123,9 +122,9 @@ useEffect(() => {
 
   }
   return (
-    <Modal {...props} size="md" centered closeButton>
+    <Modal {...props} size="md" centered >
       
-      <Modal.Body style={{ maxHeight: "70vh", minHeight: "70vh", overflowY: "scroll",
+      <Modal.Body style={{ maxHeight: "70vh", minHeight: "40vh", overflowY: "scroll",
                    
        }}>
         <Box display="flex" justifyContent="center" flexDirection="row" gap="10px" flexWrap="wrap"
