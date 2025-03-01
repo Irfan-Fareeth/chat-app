@@ -4,6 +4,9 @@ import { ChatState } from "@/components/ApiContext/ChatProvider";
 import { ThreeDot } from "react-loading-indicators";
 import axios from "axios";
 import { isLoggedUser } from "@/components/chatpage/chatlist/ChatRequirements";
+import io from "socket.io-client";
+const ENDPOINT = "http://localhost:5000";
+var socket, selectedChatCompare;
 
 const MessageBox = () => {
   const [newMessage, setNewMessage] = useState("");
@@ -12,12 +15,37 @@ const MessageBox = () => {
   const messagesEndRef = useRef(null);
   const messagesContainerRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [socketConnected, setSocketConnected] = useState(false);
+  //useEffect to 
+  useEffect(()=>
+  {
+    socket = io(ENDPOINT);
+    socket.emit("setup", user);
+    socket.on('connected', ()=>setSocketConnected(true));
+  }, []);
+
 
   useEffect(() => {
     setAllMessages([]);
     fetchMessages();
+    selectedChatCompare = selectedChat;
   }, [selectedChat]);
 
+
+  useEffect(()=>
+  {
+    socket.on("message received", (newMessageReceived)=>
+    {
+      if(!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id)
+      {
+        //notification
+      }
+      else
+      {
+        setAllMessages([...allMessages, newMessageReceived]);
+      }
+    });
+  })
   useEffect(() => {
     if (messagesContainerRef.current) {
       messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
@@ -49,6 +77,7 @@ const MessageBox = () => {
     } catch (error) {
       console.error(error);
     } finally {
+      socket.emit('join chat', selectedChat._id);
       setIsLoading(false);
     }
   };
@@ -72,6 +101,7 @@ const MessageBox = () => {
         config
       );
 
+      socket.emit('new message', data);
       setAllMessages([...allMessages, data]);
     } catch (error) {
       console.error(error);

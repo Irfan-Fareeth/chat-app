@@ -11,6 +11,8 @@ import { ChatState } from '../../ApiContext/ChatProvider.jsx';
 import { GetSender } from './ChatRequirements';
 import AddChatModal from './AddChatModal';
 import GroupChatModal from '../groupchat/GroupChatModal';
+
+
 const ChatList = () => {
    // Ensure it's an empty array, not undefined
   const [userInfo, setUserInfo] = useState(); // Start as null to check when it updates

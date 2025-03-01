@@ -13,7 +13,7 @@ import ProfileModal from "./ProfileModal"
 import { ChatState } from "@/components/ApiContext/ChatProvider"
 const Profile = () => {
   const navigate = useNavigate();
-  const {setArr, setSelectedChat, setVisibleProfileTab} = ChatState();
+  const {setArr, setSelectedChat, setVisibleProfileTab, user} = ChatState();
   const logoutHandler = async ()=>
   {
       localStorage.removeItem("userInfo");
@@ -30,7 +30,9 @@ const Profile = () => {
       <>
       <MenuRoot>
       <MenuTrigger asChild>
-        <Box cursor="pointer" fontWeight="bold">
+        <Box cursor="pointer" fontWeight="bold" display="flex" justifyContent="center" 
+        alignItems="center" gap="4px">
+          {/* {user.name} */}
         <Avatar.Root  size="sm">
         <Avatar.Fallback name="irfan fareeth" />
         <Avatar.Image src="vite.svg" />
