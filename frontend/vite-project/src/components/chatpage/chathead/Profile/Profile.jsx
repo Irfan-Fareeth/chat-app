@@ -34,15 +34,15 @@ const Profile = () => {
         alignItems="center" gap="4px">
           {/* {user.name} */}
         <Avatar.Root  size="sm">
-        <Avatar.Fallback name="irfan fareeth" />
-        <Avatar.Image src="vite.svg" />
+        <Avatar.Fallback name={user?.name} />
+        <Avatar.Image src={user?.pic} />
         </Avatar.Root>
         </Box>
       </MenuTrigger>
       <MenuContent>
-        <MenuItem value="profile" valueText="profile">
+        <MenuItem value="profile" valueText="profile" onClick={() => setModalShow(true)}>
           <LuUser/>
-          <Box  flex="1" onClick={() => setModalShow(true)}>Profile</Box>
+          <Box  flex="1"  width="100%" >Profile</Box>
         </MenuItem>
         
         <MenuItem value="logout" valueText="logout" onClick={logoutHandler}>

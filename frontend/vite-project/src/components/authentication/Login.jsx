@@ -73,8 +73,8 @@ const Login = () => {
                     width="100%"
                     disabled={isLogging}
                     onClick={async () => {
-                       await setEmail("guestguest@gmail.com");
-                       await setPassword("guest@4002");
+                        setEmail("guest@gmail.com");
+                        setPassword("guest@4002");
                        console.log(email);
                        console.log(password);
                        setGuestLogin(true);

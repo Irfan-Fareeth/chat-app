@@ -10,18 +10,26 @@ var socket, selectedChatCompare;
 
 const MessageBox = () => {
   const [newMessage, setNewMessage] = useState("");
-  const { user, selectedChat } = ChatState();
+  const { user, selectedChat, fetchChats } = ChatState();
   const [allMessages, setAllMessages] = useState([]);
   const messagesEndRef = useRef(null);
   const messagesContainerRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
   const [socketConnected, setSocketConnected] = useState(false);
+
+  const [typing, setTyping] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
+  
+  //notificaiton
+  const {notification, setNotification} = ChatState();
   //useEffect to 
   useEffect(()=>
   {
     socket = io(ENDPOINT);
     socket.emit("setup", user);
-    socket.on('connected', ()=>setSocketConnected(true));
+    socket.on("connected", ()=>setSocketConnected(true));
+    socket.on("typing", ()=>setIsTyping(true))
+    socket.on("stop typing", ()=> setIsTyping(false));
   }, []);
 
 
@@ -32,20 +40,22 @@ const MessageBox = () => {
   }, [selectedChat]);
 
 
-  useEffect(()=>
-  {
-    socket.on("message received", (newMessageReceived)=>
-    {
-      if(!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id)
-      {
-        //notification
+ 
+  useEffect(() => {
+    socket.on("message received", (newMessageReceived) => {
+      if (!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id) {
+
+          setNotification((prev) => [newMessageReceived, ...prev]);
+        
+      } else {
+        setAllMessages((prevMessages) => [...prevMessages, newMessageReceived]);
       }
-      else
-      {
-        setAllMessages([...allMessages, newMessageReceived]);
-      }
+      fetchChats(); 
     });
-  })
+  
+   
+  }, []);
+  
   useEffect(() => {
     if (messagesContainerRef.current) {
       messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
@@ -82,11 +92,38 @@ const MessageBox = () => {
     }
   };
   
+  const typingHandler = (e)=>
+  {
+    setNewMessage(e.target.value);
+
+    if(!socketConnected) return ;
+    if(!typing)
+    {
+      setTyping(true);
+      socket.emit("typing", selectedChat._id);
+    }
+    
+    let lastTypingTime = new Date().getTime();
+    var timerLength = 3000;
+    setTimeout(()=>
+    {
+      var timeNow = new Date().getTime();
+      var timeDiff = timeNow - lastTypingTime;
+      if(timeDiff >= timerLength && typing)
+      {
+        socket.emit("stop typing", selectedChat._id);
+        setTyping(false);
+      }
+    }, timerLength);
+  };
 
   const sendMessage = async () => {
     if (!newMessage.trim()) return;
-    setNewMessage("");
 
+    socket.emit("stop typing", selectedChat._id);
+    const messageToSend = newMessage;
+    setNewMessage("");
+    
     try {
       const config = {
         headers: {
@@ -94,20 +131,23 @@ const MessageBox = () => {
           Authorization: `Bearer ${user.token}`,
         },
       };
-
+  
       const { data } = await axios.post(
         "http://localhost:5000/api/message",
-        { chatId: selectedChat._id, content: newMessage },
+        { chatId: selectedChat._id, content: messageToSend },
         config
       );
-
-      socket.emit('new message', data);
-      setAllMessages([...allMessages, data]);
+  
+      socket.emit("new message", data);
+  
+      // Use a functional update to always work with the latest state
+      setAllMessages(prevMessages => [...prevMessages, data]);
+      fetchChats();
     } catch (error) {
       console.error(error);
     }
   };
-
+  
   return (
     <Box 
   display="flex" 
@@ -117,14 +157,15 @@ const MessageBox = () => {
   gap="5px"
 >
   {/* Message Display Section */}
-  <Box
+      <Box
     flex="1"
     overflowY="auto"
     borderRadius="4px"
     padding="10px"
+    paddingBottom="30px"
     display="flex"
     flexDirection="column"
-    gap="5px"
+    gap="5px" 
     style={{ scrollbarWidth: "none" }}
     backgroundColor="#EAFAEA"
     minHeight="0" /* Ensures flexbox does not break scrolling */
@@ -140,7 +181,6 @@ const MessageBox = () => {
             {/* Encryption Message */}
             <Box
               width="100%" borderRadius="4px" 
-              borderRadius="px"
               marginBottom="6px"
               padding="5px"
               display="flex"
@@ -173,7 +213,7 @@ const MessageBox = () => {
                   fontSize="75%"
                   borderRadius="10px"
                   color="white"
-                  backgroundColor={isLoggedUser(user, message.sender) ? "#27445D" : "#71BBB2"}
+                  backgroundColor={isLoggedUser(user, message.sender) ? "#474E93" : "#71BBB2"}
                 >
                   {message.content}
                 </Box>
@@ -184,6 +224,8 @@ const MessageBox = () => {
             <div ref={messagesEndRef} />
           </>
         )}
+      {isTyping?<ThreeDot variant="pulsate" color="#71BBB2" size="small" text="" textColor="#NaNNaNNaN" />
+      :<></>}
       </Box>
 
       {/* Input Section */}
@@ -195,7 +237,7 @@ const MessageBox = () => {
             height="100%"
             style={{ width: "100%", outline: "none", backgroundColor: "#EAFAEA" }}
             value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
+            onChange={typingHandler}
             onKeyDown={(e) => e.key === "Enter" && sendMessage()} // Listen for Enter key
           />
 

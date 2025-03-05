@@ -19,10 +19,10 @@ const registerUser = asyncHandler(async (req, res) => {
 
         throw new Error("User already exits");
     }
-
+    const pic = photo;
     const user = await User.create(
         {
-            name, email, password, photo
+            name, email, password, pic
         }
     );
 
@@ -33,7 +33,7 @@ const registerUser = asyncHandler(async (req, res) => {
                 _id: user._id,
                 name: user.name,
                 email: user.email,
-                photo: user.photo,
+                pic: user.pic,
                 token: generateToken(user._id) // jwt token
 
             }
@@ -59,7 +59,7 @@ const authUser = asyncHandler( async(req, res)=>
                 _id: user._id,
                 name: user.name,
                 email: user.email,
-                photo: user.photo,
+                pic: user.pic,
                 token: generateToken(user._id)
             }
         );

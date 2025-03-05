@@ -20,7 +20,7 @@ const Homepage = () => {
           m = "40px 0 15px 0"
           borderRadius="lg"
           borderWidth="1px">
-          <h1>Chit Chat</h1>
+          <h1>ChatVengers</h1>
         </Box>
         <Box 
           display='flex' 

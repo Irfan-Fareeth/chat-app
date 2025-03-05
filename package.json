@@ -10,6 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "@chakra-ui/react": "^2.7.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/material": "^6.4.6",
     "bcryptjs": "^2.4.3",
     "bootstrap": "^5.3.3",
     "cors": "^2.8.5",

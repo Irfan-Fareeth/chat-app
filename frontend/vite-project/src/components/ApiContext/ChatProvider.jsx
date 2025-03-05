@@ -10,6 +10,7 @@ const ChatProvider = ({children})=>
     const [selectedChat, setSelectedChat] = useState("");
     const [visibleProfileTab, setVisibleProfileTab] = useState(false);
     const navigate = useNavigate();
+    const [notification, setNotification] = useState([]);
     //fetch chats
     const fetchChats = async () => {
         try {
@@ -39,6 +40,7 @@ const ChatProvider = ({children})=>
                       fetchChats, 
                       selectedChat, setSelectedChat,
                       visibleProfileTab, setVisibleProfileTab,
+                      notification, setNotification
                      }}>{children}</ChatContext.Provider>;
 
 }

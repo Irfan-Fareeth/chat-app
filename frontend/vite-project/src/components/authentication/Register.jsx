@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import { Button, Input, Stack, Box } from "@chakra-ui/react";
+import { Button, Input, Stack, Box, Spinner } from "@chakra-ui/react";
 import { Field } from "@/components/ui/field";
-import { FileUploadRoot, FileUploadTrigger } from "@/components/ui/file-upload";
-import { HiUpload } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import axios from 'axios';
@@ -14,9 +12,40 @@ const Register = () => {
     const [name, setName] = useState('');
     const [photo, setPhoto] = useState(null);
     const [loading, setLoading] = useState(false);
-
+    
     const navigate = useNavigate();
 
+    const photoHandler = async(e)=>
+    {
+        setLoading(true);
+        const file  = e.target.files[0];
+        console.log(file);
+        if(!file) return ;
+        
+        const data = new FormData();
+        data.append("file", file);
+        data.append("upload_preset", "chat-app");
+        data.append("cloud_name", "dfehumiqx");
+        
+        await fetch("https://api.cloudinary.com/v1_1/piyushproj/image/upload", {
+          method: "post",
+          body: data,
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            setPhoto(data.url.toString());
+            console.log(data.url.toString());
+            setLoading(false);
+          })
+          .catch((err) => {
+            console.log(err);
+            toast.error("error uploading the image");
+            setLoading(false);
+          });
+  
+        console.log(photo);
+
+    }
     const SubmitHandler = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -38,7 +67,7 @@ const Register = () => {
 
             const { data } = await axios.post(
                 'http://localhost:5000/api/user/register',
-                { name, password, email },
+                { name, password, email, photo },
                 config
             );
 
@@ -71,19 +100,18 @@ const Register = () => {
                   <Field label="Confirm Password" required>
                       <Input  placeholder="Enter your password" type='password' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
                   </Field>
-  
-                  <FileUploadRoot>
-                      <FileUploadTrigger asChild>
-                          <Button leftIcon={<HiUpload />} isLoading={loading} as="label" padding="10px">
-                              Upload file
-                              <input type="file" hidden onChange={(e) => setPhoto(e.target.files[0])} />
-                          </Button>
-                      </FileUploadTrigger>
-                  </FileUploadRoot>
-  
+                  <Field label="Upload file">
+                       <Input type="file" onChange={photoHandler}/>
+                  </Field>  
+                  
+                  {!loading?
                   <Button w='100%' type='submit' isLoading={loading}>
                       Sign Up
+                  </Button>:
+                  <Button w='100%'  disabled>
+                    <Spinner/>
                   </Button>
+                    }
               </Stack>
           </form>
       </Box>

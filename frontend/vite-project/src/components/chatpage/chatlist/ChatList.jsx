@@ -155,12 +155,7 @@ const ChatList = () => {
           >
             <UserPlus size={24} /> Add new contact
           </Button>
-          <Text  textAlign="center" fontSize="large"  color="white" style={{border:"none", display: "flex", 
-                         justifyContent: "center", alignItems: "center", gap: "8px", height: "100%",
-                        width: "100%"
-          }}>
-            <SearchX size={30}/> No results
-          </Text>
+        
 
         </>
         }

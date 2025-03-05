@@ -13,3 +13,9 @@ export const isLoggedUser = (loggedUser, user)=>
   return (loggedUser?._id === user?._id?true:false);
 }
 
+//to export non logged user to display in their profile
+export const isNonLoggedUser  = (loggedUser, user)=>
+{
+  return (loggedUser?._id === user?._id?false: true);
+}
+
