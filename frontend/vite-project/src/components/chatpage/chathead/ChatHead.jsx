@@ -23,13 +23,15 @@ const ChatHead = () => {
       alignItems="center"
       padding="5px 10px"
       height="50px"
-      backdropFilter="blur(10px)"
-      opacity="0.8"
-      backgroundColor="black"
       position="sticky"
       top="0"
+      backgroundColor = "transparent"
+      
     >
-      <Box color="white">Chit-Chat</Box>
+
+      <Box color="white" fontSize="2rem">
+        <img src="./chatVengers.png" width={"100"} height="100"/>
+      </Box>
 
       <Box color="white" display="flex" alignItems="center" gap="10px">
         <MenuRoot>

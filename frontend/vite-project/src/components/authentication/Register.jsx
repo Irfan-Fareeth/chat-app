@@ -4,7 +4,8 @@ import { Field } from "@/components/ui/field";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import axios from 'axios';
-
+import './hover.css';
+import { HiUpload } from "react-icons/hi"
 const Register = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -87,25 +88,71 @@ const Register = () => {
           height="80%"
       >
           <form onSubmit={SubmitHandler} style={{ width: "100%"}}>
-              <Stack spacing={3}  w="100%">
+              <Stack spacing={3}  w="100%" display="flex" justifyContent="center" alignItems="center">
                   <Field label="User Name" required>
-                      <Input placeholder="Enter your name" value={name} onChange={(e) => setName(e.target.value)} />
+                      <Input placeholder="Enter your name" value={name} onChange={(e) => setName(e.target.value)} 
+                      border="none"
+                      borderBottom="1px solid #143D60"/>
                   </Field>
                   <Field label="Email" required>
-                      <Input placeholder="Enter your email" type='email' value={email} onChange={(e) => setEmailId(e.target.value)} />
+                      <Input placeholder="Enter your email" type='email' value={email} onChange={(e) => setEmailId(e.target.value)} 
+                      border="none"
+                      borderBottom="1px solid #143D60"/>
                   </Field>
                   <Field label="Password" required>
-                      <Input placeholder="Enter your password" type='password' value={password} onChange={(e) => setPassword(e.target.value)} />
+                      <Input placeholder="Enter your password" type='password' value={password} onChange={(e) => setPassword(e.target.value)} 
+                      border="none"
+                      borderBottom="1px solid #143D60"/>
                   </Field>
                   <Field label="Confirm Password" required>
-                      <Input  placeholder="Enter your password" type='password' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+                      <Input  placeholder="Enter your password" type='password' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} 
+                      border="none"
+                      borderBottom="1px solid #143D60"/>
                   </Field>
-                  <Field label="Upload file">
-                       <Input type="file" onChange={photoHandler}/>
-                  </Field>  
+                  <Box position="relative" width="100%">
+                    <Input 
+                        type="file" 
+                        id="file-upload"
+                        onChange={photoHandler} 
+                        display="none" // Hide the default file input
+                    />
+                    
+                    <label 
+                        htmlFor="file-upload"
+                        style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "8px",
+                        width: "fit-content",
+                        padding: "8px 16px",
+                        background: "transparent",
+                        color: "white",
+                        border: "2px solid white",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                        fontSize: "14px",
+                        fontWeight: "bold",
+                        transition: "all 0.3s ease",
+                        }}
+                        
+                        onMouseOver={(e) => e.target.style.background = "rgba(255, 255, 255, 0.1)"}
+                        onMouseOut={(e) => e.target.style.background = "transparent"}
+                    >
+                        <HiUpload />
+                        Upload File
+                    </label>
+                    </Box>
+
+                  
                   
                   {!loading?
-                  <Button w='100%' type='submit' isLoading={loading}>
+                  <Button w='80%' type='submit' isLoading={loading}
+                    backgroundColor="white"
+                    border="1px solid #143D60"
+                    color="#143D60"
+                    onMouseOver={(e) => {e.target.style.background = "#143D60"; e.target.style.color="white"}}
+                    onMouseOut={(e) => {e.target.style.background = "white"; e.target.style.color="#143D60"}}>
                       Sign Up
                   </Button>:
                   <Button w='100%'  disabled>

@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Box } from "@chakra-ui/react";
+import { Box,Center, Menu, Portal  } from "@chakra-ui/react";
 import { ChatState } from "@/components/ApiContext/ChatProvider";
 import { ThreeDot } from "react-loading-indicators";
 import axios from "axios";
 import { isLoggedUser } from "@/components/chatpage/chatlist/ChatRequirements";
+import { AnimatePresence, motion } from "motion/react"
 import io from "socket.io-client";
 const ENDPOINT = "http://localhost:5000";
 var socket, selectedChatCompare;
@@ -19,7 +20,7 @@ const MessageBox = () => {
 
   const [typing, setTyping] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
-  
+
   //notificaiton
   const {notification, setNotification} = ChatState();
   //useEffect to 
@@ -43,7 +44,7 @@ const MessageBox = () => {
  
   useEffect(() => {
     socket.on("message received", (newMessageReceived) => {
-      if (!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id) {
+      if (!selectedChatCompare || selectedChatCompare._id != newMessageReceived.chat._id) {
 
           setNotification((prev) => [newMessageReceived, ...prev]);
         
@@ -155,6 +156,7 @@ const MessageBox = () => {
   height="100%" 
   width="100%" 
   gap="5px"
+  backgroundColor="transparent"
 >
   {/* Message Display Section */}
       <Box
@@ -167,7 +169,6 @@ const MessageBox = () => {
     flexDirection="column"
     gap="5px" 
     style={{ scrollbarWidth: "none" }}
-    backgroundColor="#EAFAEA"
     minHeight="0" /* Ensures flexbox does not break scrolling */
     ref={messagesContainerRef}
   >
@@ -186,38 +187,61 @@ const MessageBox = () => {
               display="flex"
               justifyContent="center"
               flexDirection="column"
-              backgroundColor="#27445D"
+              backgroundColor="transparent"
               color="white"
               alignItems="center"
+
             >
               <Box display="flex" justifyContent="center">
                 **🔒 Messages are end-to-end encrypted**
               </Box>
-              No one outside of this chat, not even ChitChat, can read or listen to them.
+              <Box display="flex" justifyContent="center">
+                No one outside of this chat, not even ChitChat, can read or listen to them.
+              </Box>
             </Box>
             {/* Chat Messages */}
             {allMessages.map((message) => (
-              <Box 
-                display="flex"
-                width="100%"
-                key={message._id}
-                justifyContent={isLoggedUser(user, message.sender) ? "flex-end" : "flex-start"}
-              >
-                <Box
-                  maxWidth="45%"
+              <Menu.Root>
+              <Menu.ContextTrigger width="full">
+                
+                <Box 
                   display="flex"
+                  width="100%"
+                  key={message._id}
                   justifyContent={isLoggedUser(user, message.sender) ? "flex-end" : "flex-start"}
-                  minHeight="40px"
-                  alignItems="center"
-                  padding="8px"
-                  fontSize="75%"
-                  borderRadius="10px"
-                  color="white"
-                  backgroundColor={isLoggedUser(user, message.sender) ? "#474E93" : "#71BBB2"}
                 >
-                  {message.content}
+                <Box
+                    maxWidth="65%"
+                    display="flex"
+                    justifyContent={isLoggedUser(user, message.sender) ? "flex-end" : "flex-start"}
+                    minHeight="40px"
+                    alignItems="center"
+                    padding="8px"
+                    fontSize="75%"
+                    borderRadius="10px"
+                    color="white"
+                    backgroundColor={isLoggedUser(user, message.sender) ? "#474E93" : "#71BBB2"}
+                    background="rgba(255, 255, 255, 0.2)" /* More transparency */
+                    backdropFilter="blur(15px)" /* Stronger blur */
+                    boxShadow="0 4px 10px rgba(255, 255, 255, 0.2)" /* Soft glow effect */
+                    border={isLoggedUser(user, message.sender)?"1px solid aqua":"1px solid #A0C878"} /* Subtle border */
+                    >
+                    <Box width="100%" height="100%">{message.content}</Box>
+                    
                 </Box>
-              </Box>
+                </Box>
+                
+              </Menu.ContextTrigger>
+              <Portal>
+                <Menu.Positioner>
+                  <Menu.Content>
+                    <Menu.Item value="new-txt">Delete</Menu.Item>
+                    <Menu.Item value="new-file">Copy</Menu.Item>
+                  </Menu.Content>
+                </Menu.Positioner>
+              </Portal>
+            </Menu.Root>
+            
             ))}
 
             {/* Dummy div to scroll to bottom */}
@@ -227,7 +251,7 @@ const MessageBox = () => {
       {isTyping?<ThreeDot variant="pulsate" color="#71BBB2" size="small" text="" textColor="#NaNNaNNaN" />
       :<></>}
       </Box>
-
+      
       {/* Input Section */}
       <Box minHeight="50px" maxHeight="50px" width="100%" borderRadius="4px" padding="2px" backgroundColor="#EAFAEA">
         <Box width="100%" height="100%" display="flex" gap="2px" paddingLeft="2px" backgroundColor="#EAFAEA">
