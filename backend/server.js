@@ -8,7 +8,10 @@ const messageRoutes = require("./routes/messageRoutes");
 const cors = require("cors");
 connectDB();
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: "https://chatapplicaton.onrender.com/chats",
+    credentials: true,
+  }));
 const PORT = process.env.PORT||5000;
 
 app.use(express.json()); //to tell the server to accept the json data
