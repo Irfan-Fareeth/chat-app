@@ -67,7 +67,7 @@ const Register = () => {
             const config = { headers: { "Content-type": "application/json" } };
 
             const { data } = await axios.post(
-                'http://localhost:5000/api/user/register',
+                'http://192.168.29.153:5000/api/user/register',
                 { name, password, email, photo },
                 config
             );

@@ -23,7 +23,7 @@ app.get('/', (req, res)=>
 app.use('/api/user', userRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/message', messageRoutes);
-const server = app.listen(PORT, console.log(`Server listening on port ${PORT}`));
+const server = app.listen(PORT, '0.0.0.0', console.log(`Server listening on port ${PORT}`));
 
 const io = require('socket.io')(server,
     {   pingTimeout: 60000,

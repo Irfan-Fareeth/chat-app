@@ -27,7 +27,7 @@ const Login = () => {
         setIsLogging(true);
         const config = { headers: { "Content-Type": "application/json" } };
         try {
-            const { data } = await axios.post('http://localhost:5000/api/user/login', { email, password }, config);
+            const { data } = await axios.post('http://192.168.29.153:5000/api/user/login', { email, password }, config);
             
             // Show success toast
             toast.success("Login successful!");
