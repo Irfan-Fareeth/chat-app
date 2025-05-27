@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Avatar, Box } from "@chakra-ui/react"
 import { ChatState } from '@/components/ApiContext/ChatProvider';
 import { isNonLoggedUser, GetSender } from '@/components/chatpage/chatlist/ChatRequirements';
-import SingleChatModal from './singleChatModal';
+import SingleChatModal from './SingleChatModal';
 const SingleChatProfile = () => {
 
    const {selectedChat, user} = ChatState();
