@@ -15,6 +15,11 @@ import { ChatState } from "@/components/ApiContext/ChatProvider";
 const ChatHead = () => {
   const { notification, setNotification, user, setSelectedChat } = ChatState();
 
+  const handleNotification = (notify) =>
+  {
+    setSelectedChat(notify.chat); 
+    setNotification(notification.filter((n)=>n.chat._id!=notify.chat._id));
+  };
   return (
     <Box
       width="100%"
@@ -49,13 +54,12 @@ const ChatHead = () => {
           </MenuTrigger>
 
           <MenuContent>
-            {notification.length === 0 ? (
+            {notification.length==0? (
               <MenuItem>No new notifications</MenuItem>
             ) : (
               notification.map((notify) => (
-                <MenuItem key={notify._id} onClick={()=>{setSelectedChat(notify.chat); 
-                setNotification(notification.filter((n)=>n.chat._id!=notify.chat._id))}}>
-                  New message from {GetSender(user, notify.chat.users)}
+                <MenuItem key={notify._id} onClick={()=>{handleNotification(notify)}}>
+                  New message from {notify.chat.isGroupChat?notify.chat.chatName:GetSender(user, notify.chat.users)}
                 </MenuItem>
               ))
             )}

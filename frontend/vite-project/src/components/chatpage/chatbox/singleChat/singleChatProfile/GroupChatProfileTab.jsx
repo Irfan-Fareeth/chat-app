@@ -135,7 +135,7 @@ const GroupChatProfileTab = () => {
               {user._id === selectedChat.groupAdmin[0]._id && (
                 <>
                   <Button
-                    style={{ backgroundColor: "rgb(0,0,0,0.5)", border: "none" }}
+                    style={{ backgroundColor: "#143D60", border: "none" }}
                     onClick={renameGroup}
                     disabled={renameLoading} // Disables button while loading
                   >
@@ -144,7 +144,7 @@ const GroupChatProfileTab = () => {
 
                   <Button 
                     onClick={() => setModalShow(true)} 
-                    style={{ backgroundColor: "grey", border: "none", borderLeft: "1px solid white" }}
+                    style={{ backgroundColor: "#143D60", border: "none", borderLeft: "1px solid white" }}
                   >
                     Add Members
                   </Button>
@@ -187,7 +187,7 @@ const GroupChatProfileTab = () => {
                     >
                       <Avatar.Root size="sm">
                         <Avatar.Fallback name="Default Profile" />
-                        <Avatar.Image src="vite.svg" />
+                        <Avatar.Image src={u.pic} />
                       </Avatar.Root>
                       <Box paddingLeft="10px" display="flex" gap="10px">
                         <Box >{u.name}</Box>
@@ -196,15 +196,25 @@ const GroupChatProfileTab = () => {
                     </Box>
                   </PopoverTrigger>
                   <PopoverContent>
-                    <PopoverArrow />
-                    <PopoverBody>
-                      <PopoverTitle fontWeight="medium" display="flex" justifyContent="center">
+                    <PopoverBody border="6px solid #143D60">
+                      <PopoverTitle fontWeight="medium" display="flex" justifyContent="center"
+                              borderBottom="2px solid #143D60">
                         User's Profile
                       </PopoverTitle>
                       <Box display="flex" flexDirection="column" padding="20px">
                         <Box>Name: {u.name}</Box>
                         <Box>Email: {u.email}</Box>
                       </Box>
+                      <Box width="100%" 
+                          backgroundColor="#143D60" 
+                          color="white"
+                          display="flex"
+                          justifyContent="center"
+                          alignItems="center"
+                          height="30px">
+                        Message
+                      </Box>
+
                     </PopoverBody>
                   </PopoverContent>
                 </PopoverRoot>

@@ -6,12 +6,32 @@ const Message = require("../models/messageModel");
 const allMessages = asyncHandler(
     async(req, res)=>
     {
+        const { chatId} = req.body;
         try
-        {
-            const messages = await Message.find({chat: req.params.chatId})
-                            .populate("sender", "name pic")
-                            .populate("chat");
-            res.json(messages);
+        {const messages = await Message.find({ chat: req.params.chatId })
+        .populate("sender", "name pic")
+        .populate("chat");
+        
+        // Populate chat and unreadMessages.sender
+        const chat = await Chat.findById(req.params.chatId).populate({
+            path: "unreadMessages",
+            populate: {
+            path: "sender",
+            select: "_id"
+            }
+        });
+        
+        // Filter out messages sent by current user
+        const filteredUnreadMessages = chat.unreadMessages.filter(
+            (message) => message.sender._id.toString() === req.user._id.toString()
+        );
+        
+        // Overwrite chat.unreadMessages with only others' messages
+        chat.unreadMessages = filteredUnreadMessages.map(msg => msg._id);
+        await chat.save();
+        
+        res.json(messages);
+        
 
         }catch(error)
         {
@@ -47,8 +67,7 @@ const sendMessages = asyncHandler(async (req, res) => {
         console.log("New message sent: ", message);  // Debugging
 
         // Update latestMessage in the chat
-        await Chat.findByIdAndUpdate(chatId, { latestMessage: message._id });
-
+        await Chat.findByIdAndUpdate(chatId, { latestMessage: message._id, $push : {unreadMessages: message._id}});
         res.json(message);
     } catch (error) {
         res.status(400).json({ message: error.message });

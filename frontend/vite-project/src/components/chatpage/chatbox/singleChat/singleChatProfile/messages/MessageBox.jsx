@@ -4,7 +4,6 @@ import { ChatState } from "@/components/ApiContext/ChatProvider";
 import { ThreeDot } from "react-loading-indicators";
 import axios from "axios";
 import { isLoggedUser } from "@/components/chatpage/chatlist/ChatRequirements";
-import { AnimatePresence, motion } from "motion/react"
 import io from "socket.io-client";
 const ENDPOINT = "http://localhost:5000";
 var socket, selectedChatCompare;
@@ -20,7 +19,7 @@ const MessageBox = () => {
 
   const [typing, setTyping] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
-
+  const [messageCache, setMessageCache] = useState({});
   //notificaiton
   const {notification, setNotification} = ChatState();
   //useEffect to 
@@ -29,33 +28,58 @@ const MessageBox = () => {
     socket = io(ENDPOINT);
     socket.emit("setup", user);
     socket.on("connected", ()=>setSocketConnected(true));
-    socket.on("typing", ()=>setIsTyping(true))
+    socket.on("typing", ()=>setIsTyping(true));
     socket.on("stop typing", ()=> setIsTyping(false));
+    return () => {
+      socket.disconnect();
+    };
   }, []);
 
 
   useEffect(() => {
-    setAllMessages([]);
-    fetchMessages();
+    if(!selectedChat)
+      return ;
+    if (messageCache[selectedChat._id]) {
+      // Show cached messages immediately
+      setAllMessages(messageCache[selectedChat._id]);
+      socket.emit('join chat', selectedChat._id);
+    } else {
+      setAllMessages([]); // Clear while loading new messages
+      fetchMessages();
+    }
     selectedChatCompare = selectedChat;
   }, [selectedChat]);
+  
 
 
  
   useEffect(() => {
-    socket.on("message received", (newMessageReceived) => {
-      if (!selectedChatCompare || selectedChatCompare._id != newMessageReceived.chat._id) {
+    const messageHandler =  (newMessageReceived) => {
+      if (selectedChat==""|| !selectedChat || selectedChat._id != newMessageReceived.chat._id) {
 
           setNotification((prev) => [newMessageReceived, ...prev]);
         
       } else {
-        setAllMessages((prevMessages) => [...prevMessages, newMessageReceived]);
+
+        setAllMessages((prevMessages => 
+        {
+          const updatedMessages = [...prevMessages, newMessageReceived];
+          setMessageCache( prev => (
+            {
+              ...prev,
+              [selectedChat._id]:updatedMessages,
+            }
+          ))
+          return updatedMessages;
+        }
+        ))
       }
       fetchChats(); 
-    });
+    };
   
-   
-  }, []);
+    socket.on("message received",messageHandler);
+    return () => socket.off("message received", messageHandler);
+  }, [selectedChat, fetchChats]);
   
   useEffect(() => {
     if (messagesContainerRef.current) {
@@ -84,6 +108,10 @@ const MessageBox = () => {
       // Ensure that we only update messages for the latest selected chat
       if (chatIdRef.current === selectedChat._id) {
         setAllMessages(data);
+        setMessageCache( prev => ({
+            ...prev,
+            [selectedChat._id]: data
+        }));
       }
     } catch (error) {
       console.error(error);
@@ -143,7 +171,7 @@ const MessageBox = () => {
   
       // Use a functional update to always work with the latest state
       setAllMessages(prevMessages => [...prevMessages, data]);
-      fetchChats();
+      await fetchChats();
     } catch (error) {
       console.error(error);
     }

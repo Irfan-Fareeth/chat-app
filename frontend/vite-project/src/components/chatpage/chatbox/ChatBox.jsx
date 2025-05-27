@@ -2,7 +2,6 @@ import React from 'react';
 import './ChatBox.css'; 
 import { Box} from '@chakra-ui/react';
 import { ChatState } from '@/components/ApiContext/ChatProvider';
-import SingleChatProfileTab from './singleChat/singleChatProfile/SingleChatProfileTab';
 import GroupChatProfileTab from './singleChat/singleChatProfile/GroupChatProfileTab';
 import SingleChat from './singleChat/SingleChat';
 const ChatBox = () => {
@@ -21,10 +20,7 @@ const ChatBox = () => {
     >
     {!visibleProfileTab?  
       <SingleChat/>:
-      selectedChat.isGroupChat?
-      <GroupChatProfileTab/>:
-      <SingleChatProfileTab/>
-      
+      <GroupChatProfileTab/>
     }
     </Box>
     </>

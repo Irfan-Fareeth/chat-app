@@ -65,6 +65,13 @@ const fetchChats = asyncHandler(
         .populate("users","-password")
         .populate("groupAdmin")
         .populate("latestMessage")
+        .populate({
+            path: "unreadMessages",
+            populate: {
+              path: "sender",
+              select: "name email photo _id"
+            }
+          })          
         .sort({ updatedAt: -1})
         .then(async (result)=>
         {
@@ -76,6 +83,7 @@ const fetchChats = asyncHandler(
             
             res.status(200).send(result);
         })
+        
 
         }catch(error)
         {

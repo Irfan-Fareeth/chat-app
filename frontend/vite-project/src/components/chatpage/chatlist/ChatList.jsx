@@ -11,7 +11,7 @@ import { ChatState } from '../../ApiContext/ChatProvider.jsx';
 import { GetSender, GetSenderInformation } from './ChatRequirements';
 import AddChatModal from './AddChatModal';
 import GroupChatModal from '../groupchat/GroupChatModal';
-
+import Badge from "@mui/material/Badge";
 
 const ChatList = () => {
    // Ensure it's an empty array, not undefined
@@ -68,7 +68,11 @@ const ChatList = () => {
     setLoadingChats(false);
   }, [arr, searchTerm]);
 
-  
+  const calculatedUnreadMessages = (unreadMessages)=>
+  {
+    unreadMessages = unreadMessages.filter((msg)=> msg.sender._id.toString()!= userInfo._id.toString())
+    return unreadMessages.length;
+  }
   return (
     <Box  padding="10px"  display={{md:"flex",base:selectedChat?"none":"flex"}}
         w={{base: "100%", md: "32%"}}flexDirection="column"
@@ -114,10 +118,11 @@ const ChatList = () => {
                 minHeight="5em"
                 maxHeight="5em"
                 display="flex"
-                flexDirection="column"
+                flexDirection="row"
                 padding="10px"
                 overflow="hidden"
                 transition="all 0.35s ease"
+                paddingRight="10px"
                 onClick={() => {
                   setSelectedChat(chat);
                   setVisibleProfileTab(false);
@@ -157,37 +162,58 @@ const ChatList = () => {
                 background="rgba(255, 255, 255, 0.2)" /* More transparency */
                 backdropFilter="blur(10px)" /* Stronger blur */
                 border="1px solid rgba(255, 255, 255, 0.2)" /* Subtle border */
+                
               >
-
-            <Box display="flex" alignItems="center" gap="10px">
-            <Avatar.Root  size="sm" border="1px solid white">
-                <Avatar.Fallback name={chat?.name} />
-                <Avatar.Image src={GetSenderInformation(userInfo, chat.users)?.pic} />
-            </Avatar.Root>
-            <Text fontWeight="bold" color="white" fontSize="1rem" margin="0">{
-                  chat.isGroupChat?chat.chatName:GetSender(userInfo, chat.users)
-                }</Text>
-            </Box>   
-            <div style={{
-                display: '-webkit-box',
-                WebkitBoxOrient: 'vertical',
-                WebkitLineClamp: 1,
-                textOverflow: 'ellipsis',
-                overflow: 'hidden',
-                color: 'white',
-                fontSize: '14px',
-                height: "100%",
-                width: "100%"
-              
-            }}>
-              {chat?.latestMessage[0] && chat.latestMessage[0]?.content 
-                ? `${chat.latestMessage[0].sender._id === userInfo._id ? "You" : chat.latestMessage[0].sender.name}: ${chat.latestMessage[0].content}` 
-                : "No messages yet"}
-               
-            </div>
-
+            <Box display="flex" flexDirection="column" height="100%" width="100%">
+              <Box display="flex" alignItems="center" gap="10px">
+              <Avatar.Root  size="sm" border="1px solid white">
+                  <Avatar.Fallback name={chat?.name} />
+                  <Avatar.Image src={GetSenderInformation(userInfo, chat.users)?.pic} />
+              </Avatar.Root>
+              <Text fontWeight="bold" color="white" fontSize="1rem" margin="0">{
+                    chat.isGroupChat?chat.chatName:GetSender(userInfo, chat.users)
+                  }</Text>
+              </Box>   
+                <div style={{
+                    display: '-webkit-box',
+                    WebkitBoxOrient: 'vertical',
+                    WebkitLineClamp: 1,
+                    textOverflow: 'ellipsis',
+                    overflow: 'hidden',
+                    color: 'white',
+                    fontSize: '14px',
+                    height: "100%",
+                    width: "100%"
+                  
+                }}>
+                  {chat?.latestMessage[0] && chat.latestMessage[0]?.content 
+                    ? `${chat.latestMessage[0].sender._id === userInfo._id ? "You" : chat.latestMessage[0].sender.name}: ${chat.latestMessage[0].content}` 
+                    : "No messages yet"}
+                  
+                </div>
+            </Box>
+            <Box display="flex" justifyContent="center" alignItems="center" height="100%"  paddingRight="10px">
+                  {
+                  calculatedUnreadMessages(chat.unreadMessages)?<Badge
+                  badgeContent={calculatedUnreadMessages(chat.unreadMessages)}
+                  color="primary"
+                  sx={{
+                    '& .MuiBadge-badge': {
+                      backgroundColor: 'rgb(9, 33, 54)',      // Custom color
+                      border: '1px solid white',
+                      color: 'white',     
+                      boxShadow: '0 0 6px rgba(0,0,0,0.2)', // Glow/shadow
+                      
+                      transition: 'all 0.2s ease-in-out',
+                    },
+                  }}
+                  >
+                </Badge>:null
+                }
+              </Box>
 
           </Box>
+          
         ))
         :<>
           {/* add contact when no result found*/} 

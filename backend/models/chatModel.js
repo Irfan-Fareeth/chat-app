@@ -6,7 +6,7 @@ const chatSchema = mongoose.Schema(
         users: [{type: mongoose.Schema.Types.ObjectId, ref: "User"}],
         latestMessage: [{type: mongoose.Schema.Types.ObjectId, ref: "Message"}],
         groupAdmin: [{type: mongoose.Schema.Types.ObjectId, ref: "User"}],
-
+        unreadMessages: [{type: mongoose.Schema.Types.ObjectId, ref: "Message"}]
     },
     {timestamps: true}
     

@@ -40,7 +40,7 @@ const SingleChat = () => {
           alignItems="center"
           borderRadius="10px"
           backgroundColor="#EAFAEA"
-          onClick={() => setSelectedChat("")}
+          onClick={() => setSelectedChat(null)}
       >
         <ArrowLeft size={24} />
       </Box>
