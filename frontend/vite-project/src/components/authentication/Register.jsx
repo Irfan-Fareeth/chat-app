@@ -34,7 +34,7 @@ const Register = () => {
         })
           .then((res) => res.json())
           .then((data) => {
-            setPhoto(data.url.toString());
+            setPhoto(data.secure_url); 
             console.log(data.url.toString());
             setLoading(false);
           })
