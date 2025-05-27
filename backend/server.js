@@ -9,7 +9,7 @@ const cors = require("cors");
 connectDB();
 const app = express();
 app.use(cors({
-    origin: "https://chatapplicaton.onrender.com/chats",
+    origin: "https://chatapplicaton.onrender.com",
     credentials: true,
   }));
 const PORT = process.env.PORT||5000;
