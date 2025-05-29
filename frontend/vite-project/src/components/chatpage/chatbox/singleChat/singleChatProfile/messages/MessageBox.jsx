@@ -5,7 +5,7 @@ import { ThreeDot } from "react-loading-indicators";
 import axios from "axios";
 import { isLoggedUser } from "@/components/chatpage/chatlist/ChatRequirements";
 import io from "socket.io-client";
-const ENDPOINT = "http://localhost:5000";
+const ENDPOINT = "https://chatapplication-luz3.onrender.com";
 var socket, selectedChatCompare;
 
 const MessageBox = () => {
@@ -101,7 +101,7 @@ const MessageBox = () => {
       };
   
       const { data } = await axios.get(
-        `http://localhost:5000/api/message/${selectedChat._id}`,
+        `https://chatapplication-luz3.onrender.com/api/message/${selectedChat._id}`,
         config
       );
   
@@ -162,7 +162,7 @@ const MessageBox = () => {
       };
   
       const { data } = await axios.post(
-        "http://localhost:5000/api/message",
+        "https://chatapplication-luz3.onrender.com/api/message",
         { chatId: selectedChat._id, content: messageToSend },
         config
       );

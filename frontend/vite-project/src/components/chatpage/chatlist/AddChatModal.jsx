@@ -60,7 +60,7 @@ const AddChatModal = ({ setaddChatModal, setLoadingChats,...props }) => {
     setSearched(true); // Mark that a search was performed
     try {
       const { data } = await axios.get(
-        `http://localhost:5000/api/user/register?search=${search}`,
+        `https://chatapplication-luz3.onrender.com/api/user/register?search=${search}`,
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         }
@@ -81,7 +81,7 @@ const createChat = async (userId) => {
         const config = {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         };
-        const { data } = await axios.post("http://localhost:5000/api/chat", { userId }, config);
+        const { data } = await axios.post("https://chatapplication-luz3.onrender.com/api/chat", { userId }, config);
 
         if (arr.find((c) => c._id === data._id)) {
           setaddChatModal(false);
