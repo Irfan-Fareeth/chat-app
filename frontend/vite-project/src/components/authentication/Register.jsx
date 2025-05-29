@@ -68,7 +68,7 @@ const Register = () => {
             const config = { headers: { "Content-type": "application/json" } };
 
             const { data } = await axios.post(
-                'http://localhost:5000/api/user/register',
+                'https://chatapplication-luz3.onrender.com/api/user/register',
                 { name, password, email, photo },
                 config
             );
