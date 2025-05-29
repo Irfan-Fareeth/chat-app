@@ -34,7 +34,8 @@ const Register = () => {
         })
           .then((res) => res.json())
           .then((data) => {
-            setPhoto(data.secure_url); 
+            setPhoto(data.secure_url);  // ✅ Always uses HTTPS
+
             console.log(data.url.toString());
             setLoading(false);
           })
@@ -67,7 +68,7 @@ const Register = () => {
             const config = { headers: { "Content-type": "application/json" } };
 
             const { data } = await axios.post(
-                'http://192.168.29.153:5000/api/user/register',
+                'http://localhost:5000/api/user/register',
                 { name, password, email, photo },
                 config
             );
