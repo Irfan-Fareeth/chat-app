@@ -60,7 +60,7 @@ useEffect(() => {
     setSearched(true); // Mark that a search was performed
     try {
       const { data } = await axios.get(
-        `http://localhost:5000/api/user/register?search=${search}`,
+        `https://chatapplication-luz3.onrender.com/api/user/register?search=${search}`,
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         }
@@ -98,7 +98,7 @@ useEffect(() => {
     }
   
     toast.promise(
-      axios.put("http://localhost:5000/api/chat/addToGroup", 
+      axios.put("https://chatapplication-luz3.onrender.com/api/chat/addToGroup", 
         { userToAdd: selectedUsers, chatId: selectedChat._id },
         { headers: { Authorization: `Bearer ${userInfo.token}` } }
       ).then(({ data }) => {

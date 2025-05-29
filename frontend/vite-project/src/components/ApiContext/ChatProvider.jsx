@@ -14,7 +14,7 @@ const ChatProvider = ({children})=>
     //fetch chats
     const fetchChats = async () => {
         try {
-          const { data } = await axios.get("http://localhost:5000/api/chat/fetchChats", {
+          const { data } = await axios.get("https://chatapplication-luz3.onrender.com/api/chat/fetchChats", {
             headers: { Authorization: `Bearer ${user.token}` },
           });
           console.log(user.token);

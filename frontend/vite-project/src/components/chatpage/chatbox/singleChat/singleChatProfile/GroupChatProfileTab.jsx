@@ -31,7 +31,7 @@ const GroupChatProfileTab = () => {
     setRenameLoading(true);
     try {
       const { data } = await axios.put(
-        "http://localhost:5000/api/chat/renameGroup",
+        "https://chatapplication-luz3.onrender.com//api/chat/renameGroup",
         { chatId: selectedChat._id, chatName },
         { headers: { Authorization: `Bearer ${user.token}` } }
       );
@@ -50,7 +50,7 @@ const GroupChatProfileTab = () => {
     setRemoveLoading(u._id);
     try {
       const { data } = await axios.put(
-        "http://localhost:5000/api/chat/removeFromGroup",
+        "https://chatapplication-luz3.onrender.com/api/chat/removeFromGroup",
         { chatId: selectedChat._id, userId: u._id },
         { headers: { Authorization: `Bearer ${user.token}` } }
       );
