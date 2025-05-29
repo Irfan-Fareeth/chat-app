@@ -9,9 +9,9 @@ const cors = require("cors");
 connectDB();
 const app = express();
 app.use(cors({
-    origin: "*",
+    origin: "https://chatapplicaton.onrender.com", // your frontend domain
     credentials: true,
-  }));
+}));
 const PORT = process.env.PORT||5000;
 
 app.use(express.json()); //to tell the server to accept the json data
